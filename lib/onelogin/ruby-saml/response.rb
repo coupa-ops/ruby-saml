@@ -48,7 +48,7 @@ module OneLogin
         end
       end
 
-      # A hash of alle the attributes with the response. Assuming there is only one value for each key
+      # A hash of all the attributes with the response. More than one attribute will return an array.
       def attributes
         @attr_statements ||= begin
           result = {}
@@ -58,9 +58,9 @@ module OneLogin
 
           stmt_element.elements.each do |attr_element|
             name  = attr_element.attributes["Name"]
-            value = attr_element.elements.first.text
+            value = attr_element.elements.collect(&:text)
 
-            result[name] = value
+            result[name] = value.size > 1 ? value : value.first
           end
 
           result.keys.each do |key|
